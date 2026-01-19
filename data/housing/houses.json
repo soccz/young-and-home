@@ -1,0 +1,609 @@
+[
+    {
+        "id": 1,
+        "name": "SH 신촌 역세권 청년주택",
+        "type": "공공지원 민간임대",
+        "deposit": 3000,
+        "monthly": 45,
+        "location": "신촌역 도보 3분",
+        "address": "서대문구 창천동",
+        "lat": 37.555,
+        "lon": 126.936,
+        "commute_time": 5,
+        "risk_level": "안전",
+        "features": [
+            "신축",
+            "풀옵션",
+            "커뮤니티시설"
+        ]
+    },
+    {
+        "id": 2,
+        "name": "LH 대학생 전세임대 (마포)",
+        "type": "공공임대",
+        "deposit": 100,
+        "monthly": 15,
+        "location": "홍대입구역 도보 10분",
+        "address": "마포구 동교동",
+        "lat": 37.557,
+        "lon": 126.924,
+        "commute_time": 15,
+        "risk_level": "안전",
+        "features": [
+            "저렴한 월세",
+            "LH 지원"
+        ]
+    },
+    {
+        "id": 3,
+        "name": "서강대 후문 원룸",
+        "type": "일반임대",
+        "deposit": 1000,
+        "monthly": 60,
+        "location": "서강대 후문 도보 1분",
+        "address": "마포구 신수동",
+        "lat": 37.551,
+        "lon": 126.942,
+        "commute_time": 2,
+        "risk_level": "보통",
+        "features": [
+            "학교앞",
+            "조용함"
+        ]
+    },
+    {
+        "id": 4,
+        "name": "신촌 그랑자이 오피스텔",
+        "type": "일반임대",
+        "deposit": 2000,
+        "monthly": 90,
+        "location": "이대역 도보 5분",
+        "address": "마포구 대흥동",
+        "lat": 37.556,
+        "lon": 126.945,
+        "commute_time": 10,
+        "risk_level": "안전",
+        "features": [
+            "보안철저",
+            "주차가능",
+            "헬스장"
+        ]
+    },
+    {
+        "id": 5,
+        "name": "연남동 쉐어하우스 (여성전용)",
+        "type": "쉐어하우스",
+        "deposit": 300,
+        "monthly": 45,
+        "location": "연남동 파출소 인근",
+        "address": "마포구 연남동",
+        "lat": 37.562,
+        "lon": 126.923,
+        "commute_time": 20,
+        "risk_level": "안전",
+        "features": [
+            "감성인테리어",
+            "공과금포함",
+            "친구초대가능"
+        ]
+    },
+    {
+        "id": 6,
+        "name": "안암 럭키아파트 임대",
+        "type": "아파트",
+        "deposit": 5000,
+        "monthly": 50,
+        "location": "고려대역 도보 7분",
+        "address": "성북구 안암동",
+        "lat": 37.586,
+        "lon": 127.029,
+        "commute_time": 45,
+        "risk_level": "안전",
+        "features": [
+            "방2개",
+            "베란다"
+        ]
+    },
+    {
+        "id": 7,
+        "name": "왕십리 한양대 원룸",
+        "type": "일반임대",
+        "deposit": 500,
+        "monthly": 55,
+        "location": "한양대역 도보 5분",
+        "address": "성동구 행당동",
+        "lat": 37.561,
+        "lon": 127.037,
+        "commute_time": 30,
+        "risk_level": "보통",
+        "features": [
+            "가성비",
+            "시장인근"
+        ]
+    },
+    {
+        "id": 8,
+        "name": "혜화 대학로 오피스텔",
+        "type": "일반임대",
+        "deposit": 1000,
+        "monthly": 70,
+        "location": "혜화역 도보 3분",
+        "address": "종로구 혜화동",
+        "lat": 37.582,
+        "lon": 127.001,
+        "commute_time": 40,
+        "risk_level": "안전",
+        "features": [
+            "문화시설",
+            "교통편리"
+        ]
+    },
+    {
+        "id": 9,
+        "name": "서울대입구 샤로수길 빌라",
+        "type": "다세대주택",
+        "deposit": 15000,
+        "monthly": 10,
+        "location": "서울대입구역 도보 8분",
+        "address": "관악구 봉천동",
+        "lat": 37.481,
+        "lon": 126.952,
+        "commute_time": 35,
+        "risk_level": "주의",
+        "features": [
+            "전세자금대출가능",
+            "맛집많음"
+        ]
+    },
+    {
+        "id": 10,
+        "name": "신촌 로터리 고시텔",
+        "type": "고시원",
+        "deposit": 0,
+        "monthly": 35,
+        "location": "신촌역 도보 1분",
+        "address": "서대문구 창천동",
+        "lat": 37.555,
+        "lon": 126.937,
+        "commute_time": 5,
+        "risk_level": "안전",
+        "features": [
+            "밥제공",
+            "단기입주가능"
+        ]
+    },
+    {
+        "id": 11,
+        "name": "상수동 반지하 예술가st",
+        "type": "일반임대",
+        "deposit": 500,
+        "monthly": 40,
+        "location": "상수역 도보 5분",
+        "address": "마포구 상수동",
+        "lat": 37.548,
+        "lon": 126.921,
+        "commute_time": 15,
+        "risk_level": "주의",
+        "features": [
+            "넓은평수",
+            "습기주의"
+        ]
+    },
+    {
+        "id": 12,
+        "name": "이대 정문 앞 풀옵션",
+        "type": "일반임대",
+        "deposit": 1000,
+        "monthly": 65,
+        "location": "이대 정문 3분",
+        "address": "서대문구 대현동",
+        "lat": 37.558,
+        "lon": 126.945,
+        "commute_time": 10,
+        "risk_level": "안전",
+        "features": [
+            "여성안심귀갓길",
+            "깨끗함"
+        ]
+    },
+    {
+        "id": 13,
+        "name": "합정 한강뷰 옥탑방",
+        "type": "일반임대",
+        "deposit": 1000,
+        "monthly": 55,
+        "location": "합정역 도보 10분",
+        "address": "마포구 합정동",
+        "lat": 37.549,
+        "lon": 126.913,
+        "commute_time": 20,
+        "risk_level": "보통",
+        "features": [
+            "로망실현",
+            "단열약함",
+            "루프탑"
+        ]
+    },
+    {
+        "id": 14,
+        "name": "SH 행복주택 홍제",
+        "type": "공공임대",
+        "deposit": 4000,
+        "monthly": 20,
+        "location": "홍제역 도보 5분",
+        "address": "서대문구 홍제동",
+        "lat": 37.588,
+        "lon": 126.944,
+        "commute_time": 25,
+        "risk_level": "안전",
+        "features": [
+            "최대6년거주",
+            "신축단지"
+        ]
+    },
+    {
+        "id": 15,
+        "name": "망원동 신축 투룸",
+        "type": "다세대주택",
+        "deposit": 20000,
+        "monthly": 20,
+        "location": "망원역 도보 7분",
+        "address": "마포구 망원동",
+        "lat": 37.556,
+        "lon": 126.901,
+        "commute_time": 25,
+        "risk_level": "주의",
+        "features": [
+            "신혼부부추천",
+            "망리단길"
+        ]
+    },
+    {
+        "id": 16,
+        "name": "연희동 단독주택 2층",
+        "type": "일반임대",
+        "deposit": 3000,
+        "monthly": 60,
+        "location": "연희동 자치회관 인근",
+        "address": "서대문구 연희동",
+        "lat": 37.571,
+        "lon": 126.932,
+        "commute_time": 20,
+        "risk_level": "안전",
+        "features": [
+            "마당있음",
+            "채광좋음"
+        ]
+    },
+    {
+        "id": 17,
+        "name": "공덕 롯데캐슬 오피스텔",
+        "type": "일반임대",
+        "deposit": 3000,
+        "monthly": 110,
+        "location": "공덕역 직통연결",
+        "address": "마포구 공덕동",
+        "lat": 37.543,
+        "lon": 126.952,
+        "commute_time": 15,
+        "risk_level": "안전",
+        "features": [
+            "4개노선환승",
+            "편의시설최상"
+        ]
+    },
+    {
+        "id": 18,
+        "name": "아현동 재개발 구역 빌라",
+        "type": "다세대주택",
+        "deposit": 8000,
+        "monthly": 30,
+        "location": "아현역 도보 10분",
+        "address": "마포구 아현동",
+        "lat": 37.556,
+        "lon": 126.955,
+        "commute_time": 12,
+        "risk_level": "고위험",
+        "features": [
+            "저렴함",
+            "철거예정확인필요"
+        ]
+    },
+    {
+        "id": 19,
+        "name": "숙대입구 여성전용 원룸",
+        "type": "일반임대",
+        "deposit": 500,
+        "monthly": 50,
+        "location": "숙대입구역 도보 5분",
+        "address": "용산구 청파동",
+        "lat": 37.545,
+        "lon": 126.971,
+        "commute_time": 30,
+        "risk_level": "안전",
+        "features": [
+            "CCTV완비",
+            "관리인상주"
+        ]
+    },
+    {
+        "id": 20,
+        "name": "서울역 센트럴 자이",
+        "type": "아파트쉐어",
+        "deposit": 500,
+        "monthly": 70,
+        "location": "서울역 도보 10분",
+        "address": "중구 만리동",
+        "lat": 37.554,
+        "lon": 126.966,
+        "commute_time": 20,
+        "risk_level": "안전",
+        "features": [
+            "고급아파트",
+            "헬스장무료"
+        ]
+    },
+    {
+        "id": 21,
+        "name": "신촌 현대백화점 뒤 투룸",
+        "type": "일반임대",
+        "deposit": 3000,
+        "monthly": 80,
+        "location": "신촌역 도보 2분",
+        "address": "서대문구 창천동",
+        "lat": 37.556,
+        "lon": 126.935,
+        "commute_time": 5,
+        "risk_level": "보통",
+        "features": [
+            "친구랑살기좋음",
+            "번화가"
+        ]
+    },
+    {
+        "id": 22,
+        "name": "노고산동 언덕 위 싼방",
+        "type": "일반임대",
+        "deposit": 300,
+        "monthly": 35,
+        "location": "신촌역 도보 8분",
+        "address": "마포구 노고산동",
+        "lat": 37.553,
+        "lon": 126.938,
+        "commute_time": 8,
+        "risk_level": "보통",
+        "features": [
+            "운동됨",
+            "뷰좋음",
+            "엘베없음"
+        ]
+    },
+    {
+        "id": 23,
+        "name": "광흥창역 리버뷰 오피스텔",
+        "type": "일반임대",
+        "deposit": 2000,
+        "monthly": 75,
+        "location": "광흥창역 도보 3분",
+        "address": "마포구 창전동",
+        "lat": 37.548,
+        "lon": 126.932,
+        "commute_time": 10,
+        "risk_level": "안전",
+        "features": [
+            "한강보임",
+            "자전거도로인접"
+        ]
+    },
+    {
+        "id": 24,
+        "name": "서계동 만리지구 행복주택",
+        "type": "공공임대",
+        "deposit": 5200,
+        "monthly": 18,
+        "location": "서울역 도보 15분",
+        "address": "용산구 서계동",
+        "lat": 37.552,
+        "lon": 126.968,
+        "commute_time": 25,
+        "risk_level": "안전",
+        "features": [
+            "청약당첨필요",
+            "신축"
+        ]
+    },
+    {
+        "id": 25,
+        "name": "신수동 구축 빌라 전세",
+        "type": "다세대주택",
+        "deposit": 18000,
+        "monthly": 5,
+        "location": "대흥역 도보 5분",
+        "address": "마포구 신수동",
+        "lat": 37.548,
+        "lon": 126.941,
+        "commute_time": 8,
+        "risk_level": "주의",
+        "features": [
+            "올수리",
+            "융자있음"
+        ]
+    },
+    {
+        "id": 26,
+        "name": "건대입구 스타시티 오피스텔",
+        "type": "일반임대",
+        "deposit": 2000,
+        "monthly": 85,
+        "location": "건대입구역 도보 3분",
+        "address": "광진구 자양동",
+        "lat": 37.540,
+        "lon": 127.069,
+        "commute_time": 35,
+        "risk_level": "안전",
+        "features": [
+            "역세권",
+            "상권발달",
+            "풀옵션"
+        ]
+    },
+    {
+        "id": 27,
+        "name": "성수동 카페거리 원룸",
+        "type": "일반임대",
+        "deposit": 1500,
+        "monthly": 75,
+        "location": "성수역 도보 7분",
+        "address": "성동구 성수동",
+        "lat": 37.544,
+        "lon": 127.055,
+        "commute_time": 30,
+        "risk_level": "보통",
+        "features": [
+            "핫플레이스",
+            "감성인테리어"
+        ]
+    },
+    {
+        "id": 28,
+        "name": "잠실 LH 행복주택",
+        "type": "공공임대",
+        "deposit": 4800,
+        "monthly": 22,
+        "location": "잠실역 도보 10분",
+        "address": "송파구 잠실동",
+        "lat": 37.513,
+        "lon": 127.100,
+        "commute_time": 45,
+        "risk_level": "안전",
+        "features": [
+            "청약필요",
+            "신축",
+            "운동시설"
+        ]
+    },
+    {
+        "id": 29,
+        "name": "강남역 청년주택 쉐어",
+        "type": "쉐어하우스",
+        "deposit": 500,
+        "monthly": 65,
+        "location": "강남역 도보 8분",
+        "address": "강남구 역삼동",
+        "lat": 37.497,
+        "lon": 127.028,
+        "commute_time": 40,
+        "risk_level": "안전",
+        "features": [
+            "공용주방",
+            "라운지",
+            "청소서비스"
+        ]
+    },
+    {
+        "id": 30,
+        "name": "서초 예술의전당 근처 투룸",
+        "type": "다세대주택",
+        "deposit": 25000,
+        "monthly": 15,
+        "location": "남부터미널역 도보 5분",
+        "address": "서초구 서초동",
+        "lat": 37.485,
+        "lon": 127.008,
+        "commute_time": 50,
+        "risk_level": "보통",
+        "features": [
+            "조용함",
+            "문화시설인접"
+        ]
+    },
+    {
+        "id": 31,
+        "name": "뚝섬 한강뷰 오피스텔",
+        "type": "일반임대",
+        "deposit": 3000,
+        "monthly": 95,
+        "location": "뚝섬역 도보 5분",
+        "address": "성동구 성수동",
+        "lat": 37.547,
+        "lon": 127.047,
+        "commute_time": 28,
+        "risk_level": "안전",
+        "features": [
+            "한강뷰",
+            "자전거도로",
+            "신축"
+        ]
+    },
+    {
+        "id": 32,
+        "name": "낙성대 서울대 인근 원룸",
+        "type": "일반임대",
+        "deposit": 500,
+        "monthly": 50,
+        "location": "낙성대역 도보 3분",
+        "address": "관악구 봉천동",
+        "lat": 37.477,
+        "lon": 126.962,
+        "commute_time": 38,
+        "risk_level": "보통",
+        "features": [
+            "가성비",
+            "맛집많음"
+        ]
+    },
+    {
+        "id": 33,
+        "name": "회기동 경희대 앞 고시텔",
+        "type": "고시원",
+        "deposit": 0,
+        "monthly": 38,
+        "location": "회기역 도보 2분",
+        "address": "동대문구 회기동",
+        "lat": 37.589,
+        "lon": 127.057,
+        "commute_time": 42,
+        "risk_level": "안전",
+        "features": [
+            "조식제공",
+            "단기가능",
+            "학교앞"
+        ]
+    },
+    {
+        "id": 34,
+        "name": "역삼동 테헤란로 신축 원룸",
+        "type": "일반임대",
+        "deposit": 2000,
+        "monthly": 100,
+        "location": "역삼역 도보 5분",
+        "address": "강남구 역삼동",
+        "lat": 37.500,
+        "lon": 127.036,
+        "commute_time": 42,
+        "risk_level": "안전",
+        "features": [
+            "직장인추천",
+            "보안철저",
+            "신축"
+        ]
+    },
+    {
+        "id": 35,
+        "name": "신림 SH 매입임대주택",
+        "type": "공공임대",
+        "deposit": 2500,
+        "monthly": 18,
+        "location": "신림역 도보 8분",
+        "address": "관악구 신림동",
+        "lat": 37.484,
+        "lon": 126.929,
+        "commute_time": 35,
+        "risk_level": "안전",
+        "features": [
+            "저렴한월세",
+            "장기거주가능",
+            "SH운영"
+        ]
+    }
+]

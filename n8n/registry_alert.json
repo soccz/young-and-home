@@ -1,0 +1,60 @@
+{
+    "name": "Young & Home - Super Alert Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 30
+                        }
+                    ]
+                }
+            },
+            "id": "schedule-trigger",
+            "name": "30분마다 실행",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "http://api:8000/api/agent/alert/run",
+                "method": "POST",
+                "options": {}
+            },
+            "id": "call-super-agent",
+            "name": "Super Agent 실행 (맞춤 알림)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                450,
+                300
+            ],
+            "notes": "맞춤 매물 매칭 및 알림 발송 통합 처리"
+        }
+    ],
+    "connections": {
+        "schedule-trigger": {
+            "main": [
+                [
+                    {
+                        "node": "call-super-agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "meta": {
+        "templateId": "young-and-home-super-alert"
+    }
+}

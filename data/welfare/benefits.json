@@ -1,0 +1,581 @@
+[
+  {
+    "id": "benefit_001",
+    "name": "청년월세지원",
+    "category": "주거비지원",
+    "provider": "국토교통부",
+    "description": "청년 1인가구의 주거비 부담 완화를 위한 월세 지원",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 60,
+      "income_unit": "중위소득 %",
+      "asset_max": 12200,
+      "asset_unit": "만원",
+      "housing_type": [
+        "월세",
+        "보증부월세"
+      ],
+      "required_status": [
+        "무주택자"
+      ]
+    },
+    "benefit": {
+      "amount": 200000,
+      "unit": "원/월",
+      "duration": 12,
+      "duration_unit": "개월"
+    },
+    "application": {
+      "period": "상시",
+      "method": "복지로, 주민센터",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "임대차계약서",
+        "통장사본"
+      ]
+    },
+    "url": "https://www.bokjiro.go.kr"
+  },
+  {
+    "id": "benefit_002",
+    "name": "LH 전세임대",
+    "category": "공공임대",
+    "provider": "LH 한국토지주택공사",
+    "description": "청년이 원하는 주택을 선택하면 LH가 전세계약 후 저렴하게 재임대",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 39,
+      "income_max": 100,
+      "income_unit": "중위소득 %",
+      "asset_max": 36100,
+      "asset_unit": "만원",
+      "housing_type": [
+        "전세"
+      ],
+      "required_status": [
+        "무주택자",
+        "대학생",
+        "취업준비생",
+        "청년"
+      ]
+    },
+    "benefit": {
+      "support_amount": 12000,
+      "support_unit": "만원 (수도권)",
+      "user_deposit": 200,
+      "user_deposit_unit": "만원",
+      "monthly_rent": 15,
+      "monthly_rent_unit": "만원 (이자 상당)"
+    },
+    "application": {
+      "period": "연 2회 (상·하반기)",
+      "method": "LH 청약센터",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "가족관계증명서",
+        "재학증명서"
+      ]
+    },
+    "url": "https://apply.lh.or.kr"
+  },
+  {
+    "id": "benefit_003",
+    "name": "SH 행복주택",
+    "category": "공공임대",
+    "provider": "SH 서울주택도시공사",
+    "description": "대학생, 청년, 신혼부부를 위한 역세권 공공임대주택",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 39,
+      "income_max": 100,
+      "income_unit": "도시근로자 평균소득 %",
+      "asset_max": 32500,
+      "asset_unit": "만원",
+      "housing_type": [
+        "공공임대"
+      ],
+      "required_status": [
+        "무주택자",
+        "대학생",
+        "청년",
+        "신혼부부"
+      ]
+    },
+    "benefit": {
+      "rent_ratio": "시세 60~80%",
+      "duration": 6,
+      "duration_unit": "년 (최대)"
+    },
+    "application": {
+      "period": "단지별 상이",
+      "method": "SH 청약센터",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "재학/재직증명서"
+      ]
+    },
+    "url": "https://www.i-sh.co.kr"
+  },
+  {
+    "id": "benefit_004",
+    "name": "역세권 청년주택",
+    "category": "공공지원민간임대",
+    "provider": "서울시",
+    "description": "역세권에 위치한 청년 대상 민간임대주택 (시세 85% 이하)",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 39,
+      "income_max": 120,
+      "income_unit": "도시근로자 평균소득 %",
+      "asset_max": 32500,
+      "asset_unit": "만원",
+      "housing_type": [
+        "민간임대"
+      ],
+      "required_status": [
+        "무주택자"
+      ]
+    },
+    "benefit": {
+      "rent_ratio": "시세 85% 이하",
+      "duration": 8,
+      "duration_unit": "년 (최대)"
+    },
+    "application": {
+      "period": "단지별 상이",
+      "method": "서울주거포털",
+      "documents": [
+        "주민등록등본",
+        "소득증빙"
+      ]
+    },
+    "url": "https://housing.seoul.go.kr"
+  },
+  {
+    "id": "benefit_005",
+    "name": "중소기업취업청년 전월세보증금대출 (중기청)",
+    "category": "주거대출",
+    "provider": "주택도시기금",
+    "description": "중소기업 재직 청년에게 전월세 보증금을 저금리로 대출",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 3500,
+      "income_unit": "만원/년",
+      "employment": "중소/중견기업 재직 또는 청년창업",
+      "housing_type": [
+        "전세",
+        "월세"
+      ],
+      "required_status": [
+        "무주택자"
+      ]
+    },
+    "benefit": {
+      "loan_max": 10000,
+      "loan_unit": "만원",
+      "interest_rate": 1.5,
+      "interest_unit": "%/년",
+      "duration": 2,
+      "duration_unit": "년 (4회 연장 가능)"
+    },
+    "application": {
+      "period": "상시",
+      "method": "주거래은행",
+      "documents": [
+        "재직증명서",
+        "소득증빙",
+        "임대차계약서",
+        "주민등록등본"
+      ]
+    },
+    "url": "https://nhuf.molit.go.kr"
+  },
+  {
+    "id": "benefit_007",
+    "name": "청년도약계좌",
+    "category": "자산형성",
+    "provider": "금융위원회",
+    "description": "청년의 중장기 자산형성을 지원하는 정책 금융 상품 (5년 만기 시 최대 5,000만원)",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 7500,
+      "income_unit": "만원/년",
+      "asset_max": 0,
+      "asset_unit": "만원 (금융소득 종합과세 비대상자)",
+      "housing_type": [
+        "해당없음"
+      ],
+      "required_status": [
+        "취업자",
+        "사업자"
+      ]
+    },
+    "benefit": {
+      "monthly_max": 70,
+      "monthly_unit": "만원 (납입한도)",
+      "government_match": 6,
+      "match_unit": "% (소득에 따라)",
+      "duration": 5,
+      "duration_unit": "년"
+    },
+    "application": {
+      "period": "상시",
+      "method": "시중은행 앱",
+      "documents": [
+        "소득증빙",
+        "신분증"
+      ]
+    },
+    "url": "https://www.fsc.go.kr"
+  },
+  {
+    "id": "benefit_008",
+    "name": "디딤돌 전세자금대출",
+    "category": "주거대출",
+    "provider": "주택도시기금",
+    "description": "저소득 서민을 위한 저금리 전세자금 대출 (연 2.0~2.5%)",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": null,
+      "income_max": 6000,
+      "income_unit": "만원/년",
+      "asset_max": 36100,
+      "asset_unit": "만원",
+      "housing_type": [
+        "전세"
+      ],
+      "required_status": [
+        "무주택자",
+        "세대주"
+      ]
+    },
+    "benefit": {
+      "loan_max": 25000,
+      "loan_unit": "만원 (수도권)",
+      "interest_rate": 2.0,
+      "interest_rate_max": 2.5,
+      "interest_unit": "%/년",
+      "duration": 2,
+      "duration_unit": "년 (4회 연장 가능)"
+    },
+    "application": {
+      "period": "상시",
+      "method": "주거래은행",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "임대차계약서"
+      ]
+    },
+    "url": "https://nhuf.molit.go.kr"
+  },
+  {
+    "id": "benefit_009",
+    "name": "청년 전월세 보증금 대출",
+    "category": "주거대출",
+    "provider": "주택도시기금",
+    "description": "대학생·청년을 위한 전월세 보증금 저금리 대출 (연 1.3%)",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 5000,
+      "income_unit": "만원/년",
+      "asset_max": 12200,
+      "asset_unit": "만원",
+      "housing_type": [
+        "전세",
+        "월세"
+      ],
+      "required_status": [
+        "무주택자",
+        "대학생",
+        "청년"
+      ]
+    },
+    "benefit": {
+      "loan_max": 3500,
+      "loan_unit": "만원 (월세보증금)",
+      "interest_rate": 1.3,
+      "interest_unit": "%/년",
+      "duration": 2,
+      "duration_unit": "년 (4회 연장)"
+    },
+    "application": {
+      "period": "상시",
+      "method": "주거래은행",
+      "documents": [
+        "재학증명서/취업증명서",
+        "소득증빙",
+        "임대차계약서"
+      ]
+    },
+    "url": "https://nhuf.molit.go.kr"
+  },
+  {
+    "id": "benefit_010",
+    "name": "서울시 청년수당",
+    "category": "생활지원",
+    "provider": "서울시",
+    "description": "미취업 청년의 구직활동 및 생활안정을 위한 월 50만원 지원",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 150,
+      "income_unit": "중위소득 %",
+      "asset_max": 34600,
+      "asset_unit": "만원",
+      "housing_type": [
+        "해당없음"
+      ],
+      "required_status": [
+        "서울 거주 6개월 이상",
+        "미취업자"
+      ]
+    },
+    "benefit": {
+      "amount": 500000,
+      "unit": "원/월",
+      "duration": 6,
+      "duration_unit": "개월"
+    },
+    "application": {
+      "period": "연 2회",
+      "method": "서울시 청년포털",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "졸업증명서"
+      ]
+    },
+    "url": "https://youth.seoul.go.kr"
+  },
+  {
+    "id": "benefit_011",
+    "name": "청년희망적금",
+    "category": "자산형성",
+    "provider": "금융위원회",
+    "description": "청년 목돈 마련을 위한 적금 상품 (만기 시 저축장려금 지급)",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 3600,
+      "income_unit": "만원/년",
+      "asset_max": 0,
+      "asset_unit": "제한없음",
+      "housing_type": [
+        "해당없음"
+      ],
+      "required_status": [
+        "소득 있는 청년"
+      ]
+    },
+    "benefit": {
+      "savings_max": 50,
+      "savings_unit": "만원/월",
+      "government_match": 36,
+      "match_unit": "만원 (2년 만기 시)",
+      "duration": 2,
+      "duration_unit": "년"
+    },
+    "application": {
+      "period": "상시",
+      "method": "시중은행 앱",
+      "documents": [
+        "소득증빙",
+        "신분증"
+      ]
+    },
+    "url": "https://www.fsc.go.kr"
+  },
+  {
+    "id": "benefit_012",
+    "name": "청년우대형 주택청약종합저축",
+    "category": "주택청약",
+    "provider": "국토교통부",
+    "description": "청년에게 높은 금리와 이자소득 비과세 혜택을 제공하는 청약저축",
+    "eligibility": {
+      "age_min": 19,
+      "age_max": 34,
+      "income_max": 3600,
+      "income_unit": "만원/년",
+      "asset_max": 0,
+      "asset_unit": "제한없음",
+      "housing_type": [
+        "해당없음"
+      ],
+      "required_status": [
+        "무주택 세대주",
+        "무주택 세대원"
+      ]
+    },
+    "benefit": {
+      "interest_rate": 4.5,
+      "interest_unit": "%/년 (우대금리)",
+      "tax_benefit": "이자소득 500만원까지 비과세"
+    },
+    "application": {
+      "period": "상시",
+      "method": "은행 방문 또는 앱",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "가족관계증명서"
+      ]
+    },
+    "url": "https://www.hug.go.kr"
+  },
+  {
+    "id": "benefit_013",
+    "name": "주거급여",
+    "category": "주거비지원",
+    "provider": "국토교통부",
+    "description": "저소득층 가구의 월세 및 수선유지비 지원 (기초생활보장)",
+    "eligibility": {
+      "age_min": 0,
+      "age_max": null,
+      "income_max": 47,
+      "income_unit": "중위소득 %",
+      "asset_max": 0,
+      "asset_unit": "대도시 3.5억 이하",
+      "housing_type": [
+        "월세",
+        "자가"
+      ],
+      "required_status": [
+        "기초생활수급자",
+        "차상위계층"
+      ]
+    },
+    "benefit": {
+      "amount_max": 527000,
+      "unit": "원/월 (서울 1인가구 기준)",
+      "type": "실제 임차료 기준 지원"
+    },
+    "application": {
+      "period": "상시",
+      "method": "주민센터, 복지로",
+      "documents": [
+        "주민등록등본",
+        "소득증빙",
+        "임대차계약서",
+        "통장사본"
+      ]
+    },
+    "url": "https://www.bokjiro.go.kr"
+  },
+  {
+    "id": "benefit_014",
+    "name": "긴급복지 주거지원",
+    "category": "주거비지원",
+    "provider": "보건복지부",
+    "description": "갑작스러운 위기상황(실직, 질병 등)으로 주거가 불안정한 가구 긴급 지원",
+    "eligibility": {
+      "age_min": 0,
+      "age_max": null,
+      "income_max": 75,
+      "income_unit": "중위소득 %",
+      "asset_max": 24100,
+      "asset_unit": "만원",
+      "housing_type": [
+        "임차"
+      ],
+      "required_status": [
+        "위기상황 발생 가구"
+      ]
+    },
+    "benefit": {
+      "amount_max": 640000,
+      "unit": "원/월 (대도시 4인가구)",
+      "duration": 12,
+      "duration_unit": "개월"
+    },
+    "application": {
+      "period": "상시",
+      "method": "주민센터, 129 복지콜",
+      "documents": [
+        "위기상황 증빙",
+        "주민등록등본"
+      ]
+    },
+    "url": "https://www.129.go.kr"
+  },
+  {
+    "id": "benefit_015",
+    "name": "전세보증금 반환보증보험",
+    "category": "전세보증",
+    "provider": "주택도시보증공사(HUG)",
+    "description": "전세보증금을 돌려받지 못할 경우 HUG가 대신 지급 후 집주인에게 구상",
+    "eligibility": {
+      "age_min": 0,
+      "age_max": null,
+      "income_max": 0,
+      "income_unit": "제한없음",
+      "asset_max": 0,
+      "asset_unit": "제한없음",
+      "housing_type": [
+        "전세"
+      ],
+      "required_status": [
+        "전세계약자",
+        "보증금 수도권 7억 이하"
+      ]
+    },
+    "benefit": {
+      "coverage": 100,
+      "coverage_unit": "% (보증금 전액)",
+      "premium_rate": 0.128,
+      "premium_unit": "%/년 (보증금 기준)"
+    },
+    "application": {
+      "period": "상시",
+      "method": "HUG, 은행, 안심전세앱",
+      "documents": [
+        "전입세대열람원",
+        "등기부등본",
+        "임대차계약서"
+      ]
+    },
+    "url": "https://www.hug.go.kr"
+  },
+  {
+    "id": "benefit_016",
+    "name": "서울시 안심소득",
+    "category": "생활지원",
+    "provider": "서울시",
+    "description": "중위소득 85% 이하 가구에 소득과 기준소득 차액의 절반 지원",
+    "eligibility": {
+      "age_min": 0,
+      "age_max": null,
+      "income_max": 85,
+      "income_unit": "중위소득 %",
+      "asset_max": 0,
+      "asset_unit": "일정 기준 이하",
+      "housing_type": [
+        "해당없음"
+      ],
+      "required_status": [
+        "서울 거주 1년 이상"
+      ]
+    },
+    "benefit": {
+      "amount_max": 80,
+      "unit": "만원/월 (1인가구)",
+      "calculation": "(기준소득 - 가구소득) × 50%"
+    },
+    "application": {
+      "period": "시범사업 기간",
+      "method": "서울시 안심소득 홈페이지",
+      "documents": [
+        "주민등록등본",
+        "소득증빙"
+      ]
+    },
+    "url": "https://safeincome.seoul.go.kr"
+  }
+]
