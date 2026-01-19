@@ -1,0 +1,4 @@
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+2026-01-19 18:09:13.758 Port 8501 is not available
