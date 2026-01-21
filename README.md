@@ -116,7 +116,7 @@ streamlit run Home.py
 
 ---
 
-## 👥 Contributors (서강대 AI 겨울캠프)
+## 👥 Contributors
 - **Agent Architect**: LangGraph 설계 및 프롬프트 엔지니어링, Docker 인프라 구축
 - **Data Engineer**: n8n 자동화 파이프라인(Smart Filter) 및 RAG 구축
 - **Frontend Developer**: Streamlit UI/UX 최적화 및 시나리오 기획
