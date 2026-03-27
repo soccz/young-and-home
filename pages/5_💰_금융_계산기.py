@@ -12,10 +12,10 @@ st.markdown("금융 지식이 없어도 괜찮아요. AI가 내 상황에 맞는
 spacer("20px")
 
 # 4개의 탭
-tab_rec, tab_vs, tab_dsr, tab_dict = st.tabs(["🤖 AI 대출 추천", "📊 전월세 비교", "🏦 대출 한도 진단", "📖 금융 용어 사전"])
+tab_rec, tab_vs, tab_dsr, tab_living, tab_dict = st.tabs(["🤖 AI 대출 추천", "📊 전월세 비교", "🏦 대출 한도 진단", "🏠 생활비 시뮬레이션", "📖 금융 용어 사전"])
 
-from src.agents.finance import FinancialAgent
-fin_agent = FinancialAgent()
+from src.agents.finance_agent import FinancialSimulator
+fin_agent = FinancialSimulator()
 
 # [Tab 1] AI 대출 상품 추천
 with tab_rec:
@@ -38,18 +38,64 @@ with tab_rec:
         st.markdown(f"### 🎉 추천 결과: {len(recs)}건")
         
         for rec in recs:
-            risk_content = f"""
-            <div class="risk-card">
-                <span style="background:#EEF2FF; color:#4F46E5; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">{rec['tag']}</span>
-                <h3 style="margin:8px 0; color:#1E293B;">{rec['name']}</h3>
-                <div style="display:flex; gap:20px; color:#475569; font-size:14px;">
-                    <span>💰 금리: <b>{rec['rate']}</b></span>
-                    <span>📏 한도: <b>{rec['limit']}</b></span>
-                </div>
-                <p style="margin-top:8px; margin-bottom:0; color:#64748B; font-size:13px;">{rec['desc']}</p>
-            </div>
-            """
+            risk_content = f"""<div class="risk-card">
+<span style="background:#EEF2FF; color:#4F46E5; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">{rec['tag']}</span>
+<h3 style="margin:8px 0; color:#1E293B;">{rec['name']}</h3>
+<div style="display:flex; gap:20px; color:#475569; font-size:14px;">
+<span>💰 금리: <b>{rec['rate']}</b></span>
+<span>📏 한도: <b>{rec['limit']}</b></span>
+</div>
+<p style="margin-top:8px; margin-bottom:0; color:#64748B; font-size:13px;">{rec['desc']}</p>
+</div>"""
             st.markdown(risk_content, unsafe_allow_html=True)
+            if rec.get("apply_url"):
+                st.link_button(f"🚀 {rec['name']} 신청하기", rec["apply_url"], use_container_width=True)
+
+        # === 대출 신청 Step-by-Step ===
+        spacer("10px")
+        st.markdown("### 📋 다음 단계: 신청 방법")
+
+        # 대출 상품별 신청 가이드
+        loan_guides = {
+            "중소기업": {
+                "steps": [
+                    "1️⃣ **중소기업 확인서 발급** — 회사 인사팀에 요청 또는 [중소벤처기업부](https://sminfo.mss.go.kr) 조회",
+                    "2️⃣ **기금e든든 온라인 예약** — [nhuf.molit.go.kr](https://nhuf.molit.go.kr) 접속 → 대출 예약",
+                    "3️⃣ **취급 은행 방문** — 우리/신한/하나/기업은행 (예약번호 지참)",
+                    "4️⃣ **서류 제출 + 심사** — 보통 3~5영업일 소요",
+                    "5️⃣ **임대차계약서 제출 → 대출 실행**"
+                ],
+                "docs": ["재직증명서", "중소기업 확인서", "소득금액증명원 (홈택스)", "주민등록등본", "임대차계약서", "신분증"],
+                "script": f"안녕하세요, **중소기업 취업청년 전월세보증금대출** 상담하러 왔습니다. 기금e든든에서 예약했고요, 현재 중소기업에 재직 중이며 연소득은 **{q_income}만원**입니다."
+            },
+            "버팀목": {
+                "steps": [
+                    "1️⃣ **기금e든든 온라인 예약** — [nhuf.molit.go.kr](https://nhuf.molit.go.kr)",
+                    "2️⃣ **주거래 은행 방문** (국민/신한/우리/하나/농협)",
+                    "3️⃣ **서류 제출 + 심사** — 3~7영업일",
+                    "4️⃣ **임대차계약서 제출 → 대출 실행**"
+                ],
+                "docs": ["소득금액증명원", "주민등록등본", "임대차계약서", "무주택 확인서류", "신분증"],
+                "script": f"안녕하세요, **청년전용 버팀목 전세자금대출** 상담입니다. 만 **{q_age}세**, 연소득 **{q_income}만원**이고 무주택자입니다."
+            }
+        }
+
+        # 첫 번째 추천 상품 기준 가이드 표시
+        top_rec_name = recs[0]["name"] if recs else ""
+        guide_key = "중소기업" if "중소기업" in top_rec_name else "버팀목"
+        guide = loan_guides.get(guide_key, loan_guides["버팀목"])
+
+        for s in guide["steps"]:
+            st.markdown(s)
+
+        spacer("10px")
+        with st.expander("📎 필요 서류 체크리스트"):
+            for doc in guide["docs"]:
+                st.checkbox(doc, key=f"doc_{doc}")
+
+        with st.expander("🗣️ 은행에서 이렇게 말하세요"):
+            st.info(guide["script"])
+            st.caption("💡 이 스크립트를 복사해서 메모해 가세요!")
 
 with tab_vs:
     st.markdown("### 📊 전세 vs 월세, 무엇이 더 이득일까요?")
@@ -86,23 +132,21 @@ with tab_vs:
         winner_icon = "🏠 전세가 유리해요!" if is_jeonse_win else "🏘️ 월세가 유리해요!"
         save_amt = result['difference']
         
-        win_content = f"""
-        <h2 style="color:{win_text}; margin:0;">🎉 {winner_icon}</h2>
-        <p style="font-size:18px; color:#475569; margin-top:10px;">
-        한 달에 약 <b>{save_amt:.1f}만원</b>을 아낄 수 있습니다.
-        </p>
-        """
+        win_content = f"""<h2 style="color:{win_text}; margin:0;">🎉 {winner_icon}</h2>
+<p style="font-size:18px; color:#475569; margin-top:10px;">
+한 달에 약 <b>{save_amt:.1f}만원</b>을 아낄 수 있습니다.
+</p>"""
         card(win_content, style=f"background:{win_color} !important; border:2px solid {win_border}; text-align:center;")
         
         m1, m2 = st.columns(2)
         with m1:
             st.markdown(f"**전세 선택 시** (월 지출)")
             st.markdown(f"<span style='font-size:24px; font-weight:bold; color:#3B82F6'>{result['jeonse']['monthly_cost']:.1f}만원</span>", unsafe_allow_html=True)
-            st.caption(f"이자 {result['jeonse']['breakdown']['interest']:.1f} + 관리비 10.0")
+            st.caption(f"이자 {result['jeonse']['breakdown']['interest']:.1f} + 관리비 {result['jeonse']['breakdown']['management']:.1f}")
         with m2:
             st.markdown(f"**월세 선택 시** (월 지출)")
             st.markdown(f"<span style='font-size:24px; font-weight:bold; color:#EA580C'>{result['rent']['monthly_cost']:.1f}만원</span>", unsafe_allow_html=True)
-            st.caption(f"월세 {result['rent']['breakdown']['rent']} + 관리비 10.0")
+            st.caption(f"월세 {result['rent']['breakdown']['rent']} + 관리비 {result['rent']['breakdown']['management']}")
 
         # Chart
         import pandas as pd
@@ -137,18 +181,91 @@ with tab_dsr:
         with col2:
             st.metric("필요 대출금 (보증금 80%)", f"{target_dep*0.8:.0f}만원")
 
-# [Tab 4] 금융 네비게이터
+# [Tab 4] 생활비 시뮬레이션
+with tab_living:
+    st.markdown("### 🏠 이 집에 살면 생활이 가능할까?")
+    st.caption("월세 + 관리비 + 생활비를 합산해서, 월급으로 생활이 되는지 즉시 확인합니다.")
+
+    lc1, lc2 = st.columns(2)
+    with lc1:
+        st.markdown("**💰 수입**")
+        _yearly = st.session_state.get("user_income", 0)
+        _default_monthly = _yearly // 12 if _yearly > 0 else 0
+        lv_income = st.number_input("월 소득 (만원)", min_value=0,
+                                     value=_default_monthly,
+                                     step=10, key="lv_income", help="알바비, 월급, 용돈 등 전부")
+        lv_support = st.number_input("정부 지원금 (만원/월)", min_value=0, value=0, step=5, key="lv_support",
+                                     help="청년월세지원 등 (모르면 0)")
+    with lc2:
+        st.markdown("**🏠 주거비**")
+        lv_rent = st.number_input("월세 (만원)", min_value=0, value=50, step=5, key="lv_rent")
+        lv_manage = st.number_input("관리비 (만원)", min_value=0, value=8, step=1, key="lv_manage")
+
+    st.markdown("**🛒 생활비**")
+    lc3, lc4, lc5 = st.columns(3)
+    with lc3:
+        lv_food = st.number_input("식비 (만원)", min_value=0, value=30, step=5, key="lv_food")
+        lv_transport = st.number_input("교통비 (만원)", min_value=0, value=5, step=1, key="lv_transport")
+    with lc4:
+        lv_phone = st.number_input("통신비 (만원)", min_value=0, value=5, step=1, key="lv_phone")
+        lv_util = st.number_input("전기/수도/가스 (만원)", min_value=0, value=5, step=1, key="lv_util")
+    with lc5:
+        lv_etc = st.number_input("기타 (만원)", min_value=0, value=10, step=5, key="lv_etc")
+        lv_save = st.number_input("저축 목표 (만원)", min_value=0, value=0, step=5, key="lv_save")
+
+    if st.button("💡 생활 가능 여부 진단", use_container_width=True, type="primary", key="lv_calc"):
+        total_income = lv_income + lv_support
+        total_housing = lv_rent + lv_manage
+        total_living = lv_food + lv_transport + lv_phone + lv_util + lv_etc
+        total_expense = total_housing + total_living + lv_save
+        remaining = total_income - total_expense
+
+        if remaining >= 10:
+            emoji, color, verdict = "✅", "#22C55E", "생활 가능!"
+        elif remaining >= 0:
+            emoji, color, verdict = "⚠️", "#F59E0B", "빠듯하지만 가능"
+        else:
+            emoji, color, verdict = "🚨", "#EF4444", "생활 어려움"
+
+        result_html = f"""<div style="text-align:center;">
+<div style="font-size:42px; font-weight:900; color:{color};">{remaining:+,.0f}만원</div>
+<div style="font-size:16px; font-weight:600; color:{color};">{emoji} {verdict}</div>
+<div style="font-size:13px; color:#64748B; margin-top:4px;">수입 {total_income}만 - 지출 {total_expense}만</div>
+</div>"""
+        card(result_html)
+
+        # 상세 breakdown
+        st.markdown("**📊 상세 내역**")
+        import pandas as pd
+        breakdown = pd.DataFrame({
+            "항목": ["월세", "관리비", "식비", "교통비", "통신비", "공과금", "기타", "저축"],
+            "금액(만원)": [lv_rent, lv_manage, lv_food, lv_transport, lv_phone, lv_util, lv_etc, lv_save]
+        })
+        st.bar_chart(breakdown.set_index("항목"), color=["#6366F1"])
+
+        housing_ratio = total_housing / total_income * 100 if total_income > 0 else 0
+        st.metric("주거비 비율 (수입 대비)", f"{housing_ratio:.0f}%",
+                  delta="적정" if housing_ratio <= 30 else "과부담" if housing_ratio <= 50 else "위험",
+                  delta_color="normal" if housing_ratio <= 30 else "inverse")
+        if housing_ratio > 30:
+            st.warning(f"💡 주거비가 소득의 {housing_ratio:.0f}%입니다. 30% 이하가 권장됩니다. 정부 지원금이나 더 저렴한 매물을 검토해보세요.")
+
+# [Tab 5] 금융 네비게이터
 with tab_dict:
     st.markdown("### 🧭 금융 네비게이터 (Ensemble Engine)")
     st.markdown("<p style='margin-bottom: 20px;'>단어만 아는 것을 넘어, <b>내 상황에 필요한 행동</b>까지 연결해 드립니다.</p>", unsafe_allow_html=True)
     
     # --- 0. Ensemble Persona Analysis ---
-    u_stat = st.session_state.user_status
-    u_asset = st.session_state.user_assets
-    
+    u_stat = st.session_state.get("user_status", "대학생")
+    u_asset = st.session_state.get("user_assets", 2000)
+
+    # Map English status to Korean for logic (internal keys are Korean)
+    status_en_to_ko = {"Student": "대학생", "Worker": "직장인", "Job Seeker": "취업준비생", "Entrepreneur": "창업자"}
+    u_stat_ko = status_en_to_ko.get(u_stat, u_stat)
+
     # Logic for Persona
     recs = []
-    if u_stat == "대학생" or u_stat == "취업준비생":
+    if u_stat_ko in ("대학생", "취업준비생"):
         persona_title = "🌱 사회초년생/학생을 위한 추천"
         recs = ["중기청 대출", "HUG 보증보험", "확정일자"]
         msg = f"**{u_stat}**이신가요? 금리가 낮은 **중기청 대출**과 보증금을 지킬 **HUG 보증보험**이 가장 중요합니다!"
@@ -274,40 +391,34 @@ with tab_dict:
                 is_rec = item['term'] in recs
                 badge_html = f"<span class='manus-chip chip-accent' style='font-size:11px; margin-bottom:8px;'>👍 {u_stat} 추천</span>" if is_rec else ""
                 
-                term_content = f"""
-                {badge_html}
-                <div style="display:flex; align-items:center; margin-bottom:12px; margin-top:4px;">
-                <span class="material-icons" style="font-size: 28px; color: #6366F1; margin-right: 12px;">{item['icon']}</span>
-                <div>
-                <h3 style="margin:0; font-size:18px; color:#1E293B;">{item['term']}</h3>
-                <span style="font-size:12px; color:#64748B;">{item['full']}</span>
-                </div>
-                </div>
-                <p style="font-size:14px; color:#475569; line-height:1.5; margin-bottom:16px;">
-                {item['desc']}
-                </p>
-                """
+                term_content = f"""{badge_html}
+<div style="display:flex; align-items:center; margin-bottom:12px; margin-top:4px;">
+<span class="material-icons" style="font-size: 28px; color: #6366F1; margin-right: 12px;">{item['icon']}</span>
+<div>
+<h3 style="margin:0; font-size:18px; color:#1E293B;">{item['term']}</h3>
+<span style="font-size:12px; color:#64748B;">{item['full']}</span>
+</div>
+</div>
+<p style="font-size:14px; color:#475569; line-height:1.5; margin-bottom:16px;">
+{item['desc']}
+</p>"""
                 
                 # Prepare Example Content (Only if NOT interactive)
                 example_html = ""
                 if not item.get("interactive"):
-                    example_html = f"""
-                    <div style="background:#F8FAFC; padding:12px; border-radius:8px; border:1px solid #E2E8F0; margin-top: 12px;">
-                        <span style="font-size:12px; font-weight:600; color:#6366F1;">💡 실전 예시</span><br>
-                        <span style="font-size:13px; color:#334155;">{item['example']}</span>
-                    </div>
-                    """
+                    example_html = f"""<div style="background:#F8FAFC; padding:12px; border-radius:8px; border:1px solid #E2E8F0; margin-top: 12px;">
+<span style="font-size:12px; font-weight:600; color:#6366F1;">💡 실전 예시</span><br>
+<span style="font-size:13px; color:#334155;">{item['example']}</span>
+</div>"""
 
                 # Render Card (Static Content + Example)
                 border_style = '2px solid #818CF8' if is_rec else '1px solid #E2E8F0'
                 
                 # 1. Open Card
-                st.markdown(f"""
-                <div class="manus-card" style="min-height: 240px; padding: 24px; position: relative; border: {border_style};">
-                    {term_content}
-                    {example_html}
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f"""<div class="manus-card" style="min-height: 240px; padding: 24px; position: relative; border: {border_style};">
+{term_content}
+{example_html}
+</div>""", unsafe_allow_html=True)
 
                 # 2. Interactive Section (Outside Card)
                 if item.get("interactive"):
@@ -341,6 +452,7 @@ with tab_dict:
     st.markdown("---")
     st.markdown("### 🤖 Fin-Bot (금융 비서)")
     st.caption(f"💡 {st.session_state.user_name}님의 상황(나이/소득/자산)을 분석하여 맞춤형 답변을 드립니다.")
+    st.caption("⚠️ AI 참고용 정보이며, 실제 금융 결정은 전문가 상담을 권장합니다.")
 
     if "fin_chat_messages" not in st.session_state:
         st.session_state.fin_chat_messages = [{"role": "assistant", "content": "안녕하세요! 금융 용어나 전세/월세 관련된 궁금한 점을 물어보세요."}]
@@ -358,26 +470,50 @@ with tab_dict:
             with st.spinner("분석 중..."):
                 api_key = os.getenv("OPENAI_API_KEY")
                 if not api_key:
-                     st.warning("⚠️ API Key가 설정되지 않았습니다.")
+                    st.warning("⚠️ API Key가 설정되지 않았습니다.")
                 else:
                     try:
-                        from src.agents.recommender import RecommenderAgent
-                        agent = RecommenderAgent(openai_api_key=api_key)
-                    
-                        profile_context = {
-                            "name": st.session_state.user_name,
-                            "status": st.session_state.user_status,
-                            "assets": st.session_state.user_assets
-                        }
-                        
-                        ai_query = f"""
-                        내 상황: {profile_context}
-                        질문: {prompt}
-                        금융 전문가로서 친절하고 구체적으로 답변해줘.
-                        """
-                        response = agent.run(ai_query, language="KO", user_profile=profile_context)
-                        st.write(response)
-                        st.session_state.fin_chat_messages.append({"role": "assistant", "content": response})
-                        
+                        from langchain_openai import ChatOpenAI
+                        from langchain_core.messages import HumanMessage, SystemMessage
+
+                        # LLM 캐싱
+                        if "finbot_llm" not in st.session_state or st.session_state.get("_finbot_key") != api_key:
+                            st.session_state.finbot_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=api_key)
+                            st.session_state._finbot_key = api_key
+                        llm = st.session_state.finbot_llm
+
+                        profile_context = f"이름: {st.session_state.user_name}, 신분: {st.session_state.user_status}, 자산: {st.session_state.user_assets}만원"
+
+                        system_prompt = f"""당신은 'Young & Home'의 AI 금융 비서입니다.
+한국 청년 주거 금융 전문가로서, 사용자의 상황에 맞춰 친절하고 구체적으로 답변합니다.
+
+[사용자 프로필]
+{profile_context}
+
+[전문 지식]
+- 중소기업 취업청년 전월세보증금대출 (중기청): 금리 1.2%, 최대 1억, 중소기업 재직 필수
+- 청년전용 버팀목 전세자금대출: 금리 1.5~2.1%, 최대 2억
+- DSR (총부채원리금상환비율): 연소득 대비 대출 원리금 비율, 40% 이하 유지 필요
+- LTV (주택담보인정비율): 집값 대비 대출 한도 비율
+- 전세보증보험 (HUG): 보증금 미반환 시 보호, 보증료 약 0.128%/년
+- 확정일자: 전입신고 시 반드시 받아야 대항력 확보
+- 청년월세지원: 월 최대 20만원, 소득 중위 60% 이하
+
+[답변 원칙]
+1. 사용자 프로필 기반으로 맞춤 조언
+2. 구체적 숫자와 조건을 포함
+3. 실질적인 행동 가이드 제시
+4. 한국어로 답변"""
+
+                        messages = [
+                            SystemMessage(content=system_prompt),
+                            HumanMessage(content=prompt)
+                        ]
+
+                        response = llm.invoke(messages)
+                        answer = response.content
+                        st.write(answer)
+                        st.session_state.fin_chat_messages.append({"role": "assistant", "content": answer})
+
                     except Exception as e:
                         st.error(f"오류 발생: {e}")

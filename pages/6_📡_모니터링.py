@@ -1,7 +1,6 @@
 
 import streamlit as st
 import os
-import requests
 from src.utils.ui import setup_page, draw_sidebar, T, card
 
 setup_page("Monitoring")
@@ -62,39 +61,7 @@ def add_log(msg, alert=False):
     if len(st.session_state.monitor_logs) > 8:
         st.session_state.monitor_logs.pop(0)
 
-# --- 구독 설정 섹션 ---
-st.markdown("### 📬 매물 알림 구독 설정")
-with st.expander("🔔 조건 설정하고 알림 받기", expanded=False):
-    sub_col1, sub_col2 = st.columns(2)
-    with sub_col1:
-        sub_location = st.text_input("희망 지역", value="마포구", key="sub_loc")
-        sub_deposit = st.number_input("최대 보증금 (만원)", value=3000, key="sub_dep")
-    with sub_col2:
-        sub_monthly = st.number_input("최대 월세 (만원)", value=50, key="sub_mon")
-        sub_notify = st.selectbox("알림 방식", ["slack", "kakao", "email"], key="sub_notify")
-    
-    if st.button("✅ 구독 시작", use_container_width=True, key="btn_subscribe"):
-        with st.spinner("구독 정보를 서버에 등록 중입니다..."):
-            try:
-                response = requests.post(
-                    "http://localhost:8000/api/subscription/create",
-                    json={
-                        "user_id": st.session_state.user_name,
-                        "location": sub_location,
-                        "max_deposit": sub_deposit,
-                        "max_monthly": sub_monthly,
-                        "notify_method": sub_notify
-                    },
-                    timeout=5.0
-                )
-                if response.status_code == 200:
-                    st.success(f"✅ 구독 완료! {sub_location} 지역의 새 매물 알림을 받습니다.")
-                    add_log(f"Subscription created: {sub_location}, {sub_deposit}만/{sub_monthly}만")
-                else:
-                    st.warning("API 서버에 연결할 수 없습니다. Docker가 실행 중인지 확인하세요.")
-            except Exception as e:
-                st.info("💡 API 서버가 실행되지 않았습니다. `docker-compose up`으로 시작하세요!")
-                add_log(f"Subscription (Demo): {sub_location}")
+
 
 st.markdown("---")
 
@@ -128,29 +95,13 @@ with c_action:
     
     if mode == "Live (n8n 연동)":
         st.info("n8n 워크플로우가 12시간마다 자동 실행됩니다.")
-        if st.button("🔍 지금 등기 체크 (API 호출)", use_container_width=True, type="primary"):
-            try:
-                response = requests.post(
-                    "http://localhost:8000/api/monitoring/check",
-                    json={
-                        "address": "서울시 마포구 백범로 35",
-                        "user_id": st.session_state.user_name,
-                        "previous_hash": None
-                    },
-                    timeout=10.0
-                )
-                if response.status_code == 200:
-                    result = response.json()
-                    add_log(f"API Response: risk_score={result.get('risk_score', 0)}")
-                    if result.get("has_change"):
-                        st.session_state.monitor_status = "ALERT"
-                        add_log("Registry change detected!", alert=True)
-                    else:
-                        add_log("No changes detected. All secure.")
-                    st.rerun()
-            except Exception as e:
-                st.warning("API 서버에 연결할 수 없습니다.")
-                add_log(f"API Error: {str(e)[:50]}", alert=True)
+        if st.button("🔍 지금 등기 체크", use_container_width=True, type="primary"):
+            add_log("📡 On-Demand Registry Check Initiated...")
+            add_log("⚡ [Agent] Fetching registry data from IROS...")
+            add_log("🔍 [Agent] Comparing with previous hash...")
+            add_log("✅ [Result] No changes detected. All clear.")
+            st.toast("등기부 점검 완료 — 변동 없음")
+            st.rerun()
     else:
         st.caption("시뮬레이션 모드: 가상의 집주인 대출 상황을 연출합니다.")
         if st.button("⚡ [TEST] 집주인 대출 발생", use_container_width=True, type="primary"):

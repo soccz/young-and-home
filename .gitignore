@@ -8,6 +8,8 @@ __pycache__/
 venv/
 .venv/
 *.egg-info/
+dist/
+build/
 
 # 데이터베이스
 *.db
@@ -17,6 +19,7 @@ venv/
 *.log.txt
 api_log.txt
 streamlit_log.txt
+nohup.out
 
 # 벡터DB
 .chroma_db/
@@ -29,3 +32,15 @@ debug_key.py
 
 # Streamlit
 .streamlit/secrets.toml
+.streamlit/
+
+# Node
+node_modules/
+package-lock.json
+
+# IDE
+.idea/
+.vscode/
+
+# 생성 디렉토리
+reports/

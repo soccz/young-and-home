@@ -126,7 +126,7 @@ class RegistryParser:
         self.sample_registry = SAMPLE_REGISTRY_DATA
         self.sample_contract = SAMPLE_CONTRACT_DATA
         self.api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
-        self.llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key=self.api_key)
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=self.api_key)
     
     def _encode_image(self, image_path):
         with open(image_path, "rb") as image_file:
@@ -291,7 +291,8 @@ class RiskAnalyzer:
     def analyze(self, registry_data: Dict[str, Any], deposit: int = 0) -> Dict[str, Any]:
         risks = []
         risk_score = 0
-        
+        estimated_value = 0  # 기본값 초기화
+
         if not registry_data:
             return {"risk_score": 0, "risk_level": "분석 불가", "risks": [], "recommendation": "문서를 분석할 수 없습니다."}
 
@@ -354,5 +355,6 @@ class RiskAnalyzer:
             "risks": risks,
             "recommendation": recommendation,
             "total_mortgage": total_mortgage,
-            "estimated_value": estimated_value if deposit > 0 else 0
+            "estimated_value": estimated_value if deposit > 0 else 0,
+            "total_debt": total_mortgage + total_lease
         }

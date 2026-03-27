@@ -49,6 +49,10 @@ class BenefitLoader:
                 "category": benefit.get("category"),
                 "provider": benefit.get("provider"),
                 "url": benefit.get("url"),
+                # Hybrid Search Meta (Numeric)
+                "age_min": benefit.get("eligibility", {}).get("age_min", 0),
+                "age_max": benefit.get("eligibility", {}).get("age_max", 100),
+                "income_max": benefit.get("eligibility", {}).get("income_max", 99999999), 
             }
             
             documents.append(BenefitDocument(content, metadata))
@@ -75,10 +79,16 @@ class BenefitLoader:
         
         # 혜택 내용 문자열화
         benefit_details = []
-        if benefit_info.get("amount"):
-            benefit_details.append(f"지원금: {benefit_info['amount']:,}{benefit_info.get('unit', '')}")
-        if benefit_info.get("loan_max"):
-            benefit_details.append(f"대출한도: {benefit_info['loan_max']:,}{benefit_info.get('loan_unit', '만원')}")
+        if benefit_info.get("amount") is not None:
+            try:
+                benefit_details.append(f"지원금: {int(benefit_info['amount']):,}{benefit_info.get('unit', '')}")
+            except (ValueError, TypeError):
+                benefit_details.append(f"지원금: {benefit_info['amount']}{benefit_info.get('unit', '')}")
+        if benefit_info.get("loan_max") is not None:
+            try:
+                benefit_details.append(f"대출한도: {int(benefit_info['loan_max']):,}{benefit_info.get('loan_unit', '만원')}")
+            except (ValueError, TypeError):
+                benefit_details.append(f"대출한도: {benefit_info['loan_max']}{benefit_info.get('loan_unit', '만원')}")
         if benefit_info.get("rent_ratio"):
             benefit_details.append(f"임대료: {benefit_info['rent_ratio']}")
         if benefit_info.get("interest_rate"):

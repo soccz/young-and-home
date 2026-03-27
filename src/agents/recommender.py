@@ -9,6 +9,17 @@ from langgraph.graph import StateGraph, END
 import operator
 
 
+def _format_man_won(amount_man: int) -> str:
+    """만원 단위를 읽기 좋게 변환 (10000만→1억, 3500만→3,500만원)"""
+    if amount_man >= 10000:
+        eok = amount_man // 10000
+        remainder = amount_man % 10000
+        if remainder:
+            return f"{eok}억 {remainder:,}만원"
+        return f"{eok}억원"
+    return f"{amount_man:,}만원"
+
+
 class RecommenderState(TypedDict):
     """에이전트 상태 정의"""
     messages: Annotated[Sequence[BaseMessage], operator.add]
@@ -88,126 +99,121 @@ class RecommenderAgent:
             "messages": [AIMessage(content="프로필 정보를 수집했습니다.")]
         }
     
+    def _load_benefits_db(self):
+        """혜택 DB를 한 번만 로드 (캐시)"""
+        if not hasattr(self, '_benefits_cache'):
+            import json
+            try:
+                with open("data/welfare/benefits.json", "r", encoding="utf-8") as f:
+                    all_benefits = json.load(f)
+                self._benefits_cache = {b["id"]: b for b in all_benefits}
+                self._all_benefits_list = all_benefits
+            except Exception:
+                self._benefits_cache = {}
+                self._all_benefits_list = []
+        return self._benefits_cache, self._all_benefits_list
+
+    def _filter_and_format_benefits(self, candidate_ids: set, profile: dict) -> list:
+        """공통 혜택 필터링 + 포맷팅 로직"""
+        benefits_db, all_benefits = self._load_benefits_db()
+        user_age = profile.get("age", 25)
+        user_income = profile.get("income", 0)
+
+        # 주거대출은 항상 후보에 포함
+        for b in all_benefits:
+            if b.get("category") == "주거대출":
+                candidate_ids.add(b["id"])
+
+        final = []
+        for bid in candidate_ids:
+            benefit = benefits_db.get(bid)
+            if not benefit:
+                continue
+            elig = benefit.get("eligibility", {})
+
+            # 나이 검증
+            age_min = elig.get("age_min", 0)
+            age_max = elig.get("age_max") or 100
+            if not (age_min <= user_age <= age_max):
+                continue
+
+            # 소득 검증
+            if elig.get("income_unit") == "만원/년" and user_income > elig.get("income_max", 999999):
+                continue
+
+            # 포맷 (원/만원 단위 자동 변환)
+            b_info = benefit.get("benefit", {})
+            raw_amount = b_info.get("amount", b_info.get("loan_max", b_info.get("amount_max", "확인필요")))
+            amount_str = str(raw_amount)
+            if amount_str.isdigit():
+                num = int(amount_str)
+                unit = b_info.get("unit", b_info.get("loan_unit", ""))
+                if "원" in unit and "만" not in unit and num >= 10000:
+                    amount_str = f"{num // 10000:,}만원/월"
+                elif num >= 10000 and not unit:
+                    amount_str = _format_man_won(num // 10000)
+                else:
+                    amount_str = _format_man_won(num)
+
+            is_loan = benefit.get("category") == "주거대출"
+            final.append({
+                "id": benefit["id"],
+                "name": f"{'[기본]' if is_loan else '[추천]'} {benefit['name']}",
+                "category": benefit.get("category"),
+                "provider": benefit.get("provider"),
+                "amount": amount_str,
+                "url": benefit.get("url"),
+                "is_base": is_loan
+            })
+
+        final.sort(key=lambda x: (not x['is_base'], x['category']))
+        return final[:7]
+
     def _match_benefits(self, state: RecommenderState) -> dict:
         """RAG를 활용한 혜택 매칭 + 자격 조건 필터링"""
         profile = state.get("user_profile", {})
         user_age = profile.get("age", 25)
-        user_status = profile.get("status", "청년")
-        
-        # RAG Retriever 사용
+
+        candidate_ids = set()
+
+        # RAG 검색 시도 (retriever 캐싱)
         try:
             from src.rag.retriever import BenefitRetriever
-            retriever = BenefitRetriever()
-            
-            # 프로필 기반 검색 쿼리 생성
+            if not hasattr(self, '_retriever'):
+                self._retriever = BenefitRetriever()
+            retriever = self._retriever
+
             status = profile.get("status", "청년")
             location = profile.get("location_preference", "서울")
             max_rent = profile.get("max_rent", 50)
-            
             query = f"{status} {location} 월세 {max_rent}만원 주거 지원"
-            
-            # RAG 검색 (더 많이 가져와서 필터링)
-            search_results = retriever.search(query, n_results=10)
-            
-            # 자격 조건 검증을 위해 원본 JSON 로드
-            import json
-            benefits_db = {}
-            try:
-                with open("data/welfare/benefits.json", "r", encoding="utf-8") as f:
-                    all_benefits = json.load(f)
-                    benefits_db = {b["id"]: b for b in all_benefits}
-            except:
-                pass
-            
-            # 결과를 혜택 리스트로 변환 + 자격 필터링
-            matched_benefits = []
+
+            # age_max가 null인 혜택도 포함되도록 $or 필터 사용
+            rag_filters = {
+                "$and": [
+                    {"age_min": {"$lte": user_age}}
+                ]
+            }
+            search_results = retriever.search(query, n_results=5, filters=rag_filters)
+
             for result in search_results:
-                metadata = result.get("metadata", {})
-                content = result.get("content", "")
-                benefit_id = metadata.get("id")
-                
-                # 자격 조건 검증
-                if benefit_id and benefit_id in benefits_db:
-                    elig = benefits_db[benefit_id].get("eligibility", {})
-                    
-                    # 나이 조건 검증
-                    age_min = elig.get("age_min", 0)
-                    age_max = elig.get("age_max") or 100
-                    if not (age_min <= user_age <= age_max):
-                        continue  # 나이 부적격 → 제외
-                    
-                    # 대상 상태 검증 (청년은 대부분 포함)
-                    required_status = elig.get("required_status", [])
-                    if required_status:
-                        status_match = any(
-                            s in user_status or user_status in s or s == "청년"
-                            for s in required_status
-                        )
-                        if not status_match and "무주택자" not in required_status:
-                            continue  # 상태 부적격 → 제외
-                
-                # 혜택 금액 파싱
-                amount = "상세내용 확인 필요"
-                if "지원금:" in content:
-                    try:
-                        amount = content.split("지원금:")[1].split("\n")[0].strip()
-                    except:
-                        pass
-                elif "대출한도:" in content:
-                    try:
-                        amount = content.split("대출한도:")[1].split("\n")[0].strip()
-                    except:
-                        pass
-                elif "임대료:" in content:
-                    try:
-                        amount = content.split("임대료:")[1].split("\n")[0].strip()
-                    except:
-                        pass
-                
-                matched_benefits.append({
-                    "id": metadata.get("id"),
-                    "name": metadata.get("name"),
-                    "category": metadata.get("category"),
-                    "provider": metadata.get("provider"),
-                    "amount": amount,
-                    "url": metadata.get("url")
-                })
-                
-                if len(matched_benefits) >= 5:
-                    break
-            
+                bid = result.get("metadata", {}).get("id")
+                if bid:
+                    candidate_ids.add(bid)
+
         except Exception as e:
             print(f"RAG search failed: {e}, falling back to JSON")
-            # Fallback: 기존 JSON 로드 방식 + 자격 필터링
-            import json
-            try:
-                with open("data/welfare/benefits.json", "r", encoding="utf-8") as f:
-                    all_benefits = json.load(f)
-                matched_benefits = []
-                for b in all_benefits:
-                    elig = b.get("eligibility", {})
-                    age_min = elig.get("age_min", 0)
-                    age_max = elig.get("age_max") or 100
-                    if not (age_min <= user_age <= age_max):
-                        continue
-                    
-                    benefit_info = b.get("benefit", {})
-                    amount = benefit_info.get("amount", benefit_info.get("loan_max", "확인필요"))
-                    matched_benefits.append({
-                        "id": b.get("id"),
-                        "name": b["name"],
-                        "category": b.get("category"),
-                        "amount": f"{amount:,}" if isinstance(amount, int) else str(amount)
-                    })
-                    if len(matched_benefits) >= 5:
-                        break
-            except:
-                matched_benefits = []
-        
+            # Fallback: 전체 혜택에서 나이 매칭
+            _, all_benefits = self._load_benefits_db()
+            for b in all_benefits:
+                candidate_ids.add(b.get("id"))
+
+        matched = self._filter_and_format_benefits(candidate_ids, profile)
+
         return {
-            "benefits": matched_benefits,
+            "benefits": matched,
             "current_step": "house_recommender",
-            "messages": [AIMessage(content=f"{len(matched_benefits)}개의 맞춤 혜택을 찾았습니다.")]
+            "messages": [AIMessage(content=f"{len(matched)}개의 맞춤 혜택을 찾았습니다.")]
         }
     
     def _score_house(self, house: dict, profile: dict) -> float:
@@ -258,24 +264,25 @@ class RecommenderAgent:
         
         return score
     
+    def _load_houses(self):
+        """매물 DB 로드 (캐시)"""
+        if not hasattr(self, '_houses_cache'):
+            import json, os
+            try:
+                db_path = "data/housing/houses.json"
+                if os.path.exists(db_path):
+                    with open(db_path, "r", encoding="utf-8") as f:
+                        self._houses_cache = json.load(f)
+                else:
+                    self._houses_cache = []
+            except Exception:
+                self._houses_cache = []
+        return self._houses_cache
+
     def _recommend_houses(self, state: RecommenderState) -> dict:
         """조건에 맞는 매물 추천 (스코어링 + 위험 필터링)"""
         profile = state.get("user_profile", {})
-        
-        # 1. 매물 데이터 로드
-        import json
-        import os
-        
-        houses = []
-        try:
-            db_path = "data/housing/houses.json"
-            if os.path.exists(db_path):
-                with open(db_path, "r", encoding="utf-8") as f:
-                    houses = json.load(f)
-            else:
-                print(f"Warning: {db_path} not found.")
-        except Exception as e:
-            print(f"Error loading houses: {e}")
+        houses = self._load_houses()
             
         # 데이터가 없으면 빈 리스트
         if not houses:
@@ -333,6 +340,34 @@ class RecommenderAgent:
             # 주의 매물 마킹
             if house.get("risk_level") == "주의":
                 house["_warning"] = "⚠️ 안전 분석 권장"
+                
+            # ----- [Deep Agent] Real Cost Calculation -----
+            try:
+                from src.agents.finance_agent import FinancialSimulator
+                sim_profile = {
+                    "income_yearly": profile.get("income", 0),
+                    "total_assets": profile.get("assets", 2000),
+                    "employment_type": profile.get("employment_type", "unemployed"),
+                    "age": profile.get("age", 29),
+                    "marital_status": profile.get("marital_status", "single")
+                }
+
+                if not hasattr(self, '_fin_sim'):
+                    self._fin_sim = FinancialSimulator()
+                sim_result = self._fin_sim.simulate(sim_profile, house)
+                
+                # Enrich House Data
+                real_cost = sim_result["result"]["real_monthly_cost"]
+                loan_name = sim_result["recommendation"]["loan_product"]
+                
+                house["real_monthly_cost"] = real_cost
+                house["best_loan"] = loan_name
+                house["_badge"] = f"실질월세 {real_cost}만"
+                
+            except Exception as e:
+                print(f"Finance Sim Failed: {e}")
+                house["real_monthly_cost"] = house.get("monthly", 0)
+            # ----------------------------------------------
             
             scored_houses.append((score, house))
         
@@ -378,11 +413,13 @@ class RecommenderAgent:
             
             report += f"\n### 🏡 Recommended Listings ({len(recommendations)})\n"
             for i, r in enumerate(recommendations, 1):
+                loan_info = f"\n   - 🏦 Best Loan: {r['best_loan']}" if r.get('best_loan') else ""
+                real_cost = f" (Real cost: {r['real_monthly_cost']}0k)" if r.get('real_monthly_cost') else ""
                 report += f"""
 **{i}. {r['name']}** ({r['type']})
-   - 💰 Deposit {r['deposit']}0k / Rent {r['monthly']}0k
+   - 💰 Deposit {r['deposit']}0k / Rent {r['monthly']}0k{real_cost}
    - 📍 {r['location']} (Commute {r['commute_time']}min)
-   - 🛡️ Risk: {r['risk_level']}
+   - 🛡️ Risk: {r['risk_level']}{loan_info}
 """
 
         else:
@@ -401,14 +438,43 @@ class RecommenderAgent:
             for b in benefits:
                 report += f"- **{b['name']}**: {b['amount']}\n"
             
+            # Triple-Match: 혜택 금액 합산
+            total_subsidy = 0
+            subsidy_names = []
+            for b in benefits:
+                if not b.get("is_base"):
+                    amt_str = b.get("amount", "0")
+                    # 숫자만 추출 시도
+                    try:
+                        amt_num = int(''.join(c for c in amt_str.replace(",", "") if c.isdigit()))
+                        if "원" in amt_str and "만" not in amt_str:
+                            amt_num = amt_num // 10000  # 원→만원
+                        total_subsidy += amt_num
+                        subsidy_names.append(b['name'].replace('[추천]', '').replace('[기본]', '').strip())
+                    except (ValueError, ZeroDivisionError):
+                        pass
+
             report += f"\n### 🏡 추천 매물 ({len(recommendations)}건)\n"
             for i, r in enumerate(recommendations, 1):
+                loan_info = f"\n   - 🏦 추천 대출: {r['best_loan']}" if r.get('best_loan') else ""
+                real_cost_val = r.get('real_monthly_cost', r['monthly'])
+                real_cost = f" (실질 월부담 {real_cost_val}만)" if r.get('real_monthly_cost') else ""
                 report += f"""
 **{i}. {r['name']}** ({r['type']})
-   - 💰 보증금 {r['deposit']}만 / 월세 {r['monthly']}만
+   - 💰 보증금 {r['deposit']}만 / 월세 {r['monthly']}만{real_cost}
    - 📍 {r['location']} (통근 {r['commute_time']}분)
-   - 🛡️ 위험도: {r['risk_level']}
+   - 🛡️ 위험도: {r['risk_level']}{loan_info}
 """
+
+            # Triple-Match 요약
+            if recommendations and benefits:
+                top = recommendations[0]
+                report += f"\n### 🎯 Triple-Match 요약 (1순위 기준)\n"
+                report += f"- 매물: **{top['name']}** (월세 {top['monthly']}만)\n"
+                report += f"- 대출: **{top.get('best_loan', '분석 중')}** → 실질 월 {top.get('real_monthly_cost', top['monthly'])}만\n"
+                if subsidy_names:
+                    report += f"- 지원금: {', '.join(subsidy_names[:3])}\n"
+                report += f"- **→ 예상 최종 월 부담: {top.get('real_monthly_cost', top['monthly'])}만원**\n"
         
         return {
             "current_step": "done",
@@ -445,10 +511,17 @@ class RecommenderAgent:
         
         result = self.graph.invoke(initial_state)
         
-        # 마지막 메시지 반환
+        # 마지막 메시지 반환 (기존 호환성 위해 text 포함)
+        response = {
+            "text": "추천을 생성하지 못했습니다.",
+            "benefits": result.get("benefits", []),
+            "recommendations": result.get("recommendations", [])
+        }
+        
         if result.get("messages"):
-            return result["messages"][-1].content
-        return "추천을 생성하지 못했습니다."
+            response["text"] = result["messages"][-1].content
+            
+        return response
 
 
 # Test

@@ -28,6 +28,7 @@ class LegalAdvisorAgent:
         )
         self.law_text = self._load_law_text()
         self.precedents = self._load_precedents()
+        self._law_available = "찾을 수 없습니다" not in self.law_text
         
     def _load_law_text(self) -> str:
         """법령 텍스트 로드"""
@@ -84,8 +85,13 @@ class LegalAdvisorAgent:
         ]
         
         response = self.llm.invoke(messages)
-        return response.content
-    
+        return self._add_law_warning(response.content)
+
+    def _add_law_warning(self, text: str) -> str:
+        if not self._law_available:
+            return "⚠️ **주의:** 법령 원문 데이터를 불러올 수 없어, AI가 일반 지식으로 답변했습니다. [국가법령정보센터](https://www.law.go.kr)에서 확인하세요.\n\n" + text
+        return text
+
     def generate_notice_letter(
         self, 
         notice_type: str,
@@ -159,8 +165,8 @@ class LegalAdvisorAgent:
         ]
         
         response = self.llm.invoke(messages)
-        return response.content
-    
+        return self._add_law_warning(response.content)
+
     def explain_contract_clause(self, clause: str, language: str = "KO") -> str:
         """
         계약서 조항 해석
@@ -197,8 +203,8 @@ class LegalAdvisorAgent:
         ]
         
         response = self.llm.invoke(messages)
-        return response.content
-            
+        return self._add_law_warning(response.content)
+
     def consult(self, user_question: str, language: str = "KO") -> str:
         """
         사용자 질문에 대해 법적 근거를 들어 답변 (Enhanced)
@@ -238,7 +244,7 @@ class LegalAdvisorAgent:
         ]
         
         response = self.llm.invoke(messages)
-        return response.content
+        return self._add_law_warning(response.content)
 
 
 # 자주 사용되는 통지서 템플릿

@@ -237,7 +237,61 @@ def load_css():
             margin: 0 auto !important;
             max-width: 800px !important;
         }
+
+        /* ===== 6. Mobile Responsive ===== */
+        @media (max-width: 768px) {
+            .stHorizontalBlock { flex-direction: column !important; }
+            .manus-card { padding: 16px !important; border-radius: 16px !important; margin-bottom: 16px !important; }
+            .manus-card:hover { transform: none !important; }
+            h1 { font-size: 24px !important; }
+            h2 { font-size: 20px !important; }
+            h3 { font-size: 16px !important; }
+            [data-testid="stSidebar"] { min-width: 240px !important; }
+            .stat-circle { display: none !important; }
+            footer { display: none !important; }
+        }
+
+        /* ===== 7. Bottom Tab Navigation (Mobile) ===== */
+        @media (max-width: 768px) {
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(255,255,255,0.95);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid #E2E8F0;
+                display: flex;
+                justify-content: space-around;
+                padding: 8px 0;
+                z-index: 9999;
+            }
+            .bottom-nav a {
+                text-decoration: none;
+                text-align: center;
+                font-size: 10px;
+                color: #64748B;
+                padding: 4px 8px;
+            }
+            .bottom-nav a span { display: block; font-size: 20px; margin-bottom: 2px; }
+            /* Add padding at page bottom so content isn't hidden behind nav */
+            .main .block-container { padding-bottom: 80px !important; }
+        }
+        @media (min-width: 769px) {
+            .bottom-nav { display: none !important; }
+        }
     </style>
+    """, unsafe_allow_html=True)
+
+    # Mobile bottom tab navigation
+    st.markdown("""
+    <div class="bottom-nav">
+        <a href="/"><span>🏠</span>홈</a>
+        <a href="/스마트_검색"><span>🔍</span>검색</a>
+        <a href="/안전_진단"><span>🛡️</span>안전</a>
+        <a href="/금융_계산기"><span>💰</span>금융</a>
+        <a href="/체크리스트"><span>✅</span>체크</a>
+    </div>
     """, unsafe_allow_html=True)
 
 def setup_page(title="Young & Home"):
@@ -329,12 +383,15 @@ def draw_sidebar():
         # Define Pages
         pages = [
             {"page": "Home.py", "label": "menu_home", "icon": "🏠"},
+            {"page": "pages/2_👤_내_프로필.py", "label": "menu_profile", "icon": "👤"},
             {"page": "pages/1_🔍_스마트_검색.py", "label": "menu_search", "icon": "🔍"},
             {"page": "pages/2_🛡️_안전_진단.py", "label": "menu_safety", "icon": "🛡️"},
             {"page": "pages/3_📝_협상_도우미.py", "label": "menu_neg", "icon": "📝"},
             {"page": "pages/4_⚖️_법률_상담.py", "label": "menu_legal", "icon": "⚖️"},
             {"page": "pages/5_💰_금융_계산기.py", "label": "btn_calc", "icon": "💰"},
             {"page": "pages/6_📡_모니터링.py", "label": "menu_monitor", "icon": "📡"},
+            {"page": "pages/7_✅_체크리스트.py", "label": "menu_checklist", "icon": "✅"},
+            {"page": "pages/8_📊_종합_리포트.py", "label": "menu_report", "icon": "📊"},
         ]
         
         for p in pages:
@@ -414,6 +471,28 @@ def draw_sidebar():
             {T('footer_made_by')}
         </div>
         """, unsafe_allow_html=True)
+
+@st.cache_data
+def load_regions_data():
+    try:
+        path = "data/housing/regions_guide.json"
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except:
+        pass
+    return {}
+
+@st.cache_data
+def load_checklists_data():
+    try:
+        path = "data/housing/checklists.json"
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except:
+        pass
+    return {}
 
 @st.cache_data
 def load_housing_data():

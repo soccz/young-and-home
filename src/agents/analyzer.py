@@ -18,6 +18,8 @@ class AnalyzerState(TypedDict):
     cross_validation: dict
     recommendations: list
     current_step: str
+    registry_path: str
+    contract_path: str
 
 
 class SafetyAnalyzerAgent:
@@ -93,7 +95,7 @@ class SafetyAnalyzerAgent:
                 "current_step": "cross_validator"
             }
         except Exception as e:
-             return {"messages": [AIMessage(content=f"Error analyzing risk: {e}")]}
+            return {"messages": [AIMessage(content=f"Error analyzing risk: {e}")]}
 
     def _validate_consistency(self, state: AnalyzerState) -> dict:
         """교차 검증: 등기부 vs 계약서"""
