@@ -1,2 +1,31 @@
-__pycache__/\n*.pyc\nvenv/\n.env\n.DS_Store\n.streamlit/
+# 환경변수 (API 키)
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# 데이터베이스
+*.db
+
+# 로그
+*.log
+*.log.txt
+api_log.txt
+streamlit_log.txt
+
+# 벡터DB
+.chroma_db/
+
+# 디버그용 스크립트
+debug_key.py
+
+# OS
+.DS_Store
+
+# Streamlit
+.streamlit/secrets.toml
