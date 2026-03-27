@@ -466,7 +466,7 @@ def draw_sidebar():
         st.markdown(f"""
         <div style="text-align: center; color: #888; font-size: 0.8rem;">
             🏠 <strong>Young & Home</strong><br>
-            2026 Seogang Univ. AI Winter Camp<br>
+            AI-Powered Housing Assistant<br>
             <br>
             {T('footer_made_by')}
         </div>
